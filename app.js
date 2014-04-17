@@ -86,7 +86,23 @@ var getUnanswered = function(tags) {
 		var errorElem = showError(error);
 		$('.search-results').append(errorElem);
 	});
+
+//Second Section starts here.
+		$('.inspiration-getter').submit( function(event){
+			$('.results').html('');
+			alert("call me");
+			var topic = $(this).find("input[name='answerers']").val();
+			getInspiration(topic);
+		});
+     
+	
+
+	/*function getInspiration(topic){
+      alert(topic);
+	}*/
 };
+
+
 
 
 
