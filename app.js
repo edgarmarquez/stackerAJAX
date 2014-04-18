@@ -6,6 +6,12 @@ $(document).ready( function() {
 		var tags = $(this).find("input[name='tags']").val();
 		getUnanswered(tags);
 	});
+
+	$('.inspiration-getter').submit( function(event){
+		$('.results').html('');
+		var topic = $(this).find("input[name='answerers']").val();
+		getInspiration(topic);
+	});
 });
 
 // this function takes the question object returned by StackOverflow 
@@ -75,6 +81,7 @@ var getUnanswered = function(tags) {
 	.done(function(result){
 		var searchResults = showSearchResults(request.tagged, result.items.length);
 
+
 		$('.search-results').html(searchResults);
 
 		$.each(result.items, function(i, item) {
@@ -86,23 +93,60 @@ var getUnanswered = function(tags) {
 		var errorElem = showError(error);
 		$('.search-results').append(errorElem);
 	});
-
-//Second Section starts here.
-		$('.inspiration-getter').submit( function(event){
-			$('.results').html('');
-			alert("call me");
-			var topic = $(this).find("input[name='answerers']").val();
-			getInspiration(topic);
-		});
-     
-	
-
-	/*function getInspiration(topic){
-      alert(topic);
-	}*/
 };
 
+//Making the second button
+var getInspiration = function(topic) {
+	// the parameters we need to pass in our request to StackOverflow's API
+	var request = {page: 1,
+								site: 'stackoverflow',
+								pagesize: 10,
+								tag: topic};
+	
+	var result = $.ajax({
+		url: "http://api.stackexchange.com/2.2/tags/"+topic+"/top-answerers/all_time?",
+		data: request,
+		dataType: "jsonp",
+		type: "GET",
+		})
+	.done(function(result){
+		var searchResults = showSearchResults(request.tag, result.items.length);
+		console.log(result.items);
+		$('.search-results').html(searchResults);
 
+		$.each(result.items, function(i, item) {
+			var answer = showAnswer(item);
+			$('.results').append(answer);
 
+		});
+	})
+	.fail(function(jqXHR, error, errorThrown){
+		var errorElem = showError(error);
+		$('.search-results').append(errorElem);
+	});
+};
+
+var showAnswer = function(answerer) {
+	
+	// clone our result template code
+	var result = $('.templates .answer').clone();
+	
+	// Set display and add link for answerer
+	var displayName = result.find('.name a');
+	displayName.attr('href', answerer.user.link);
+	displayName.text(answerer.user.display_name);
+
+	//display profile image for answerer
+	var image = result.find('.photo');
+	image.css( "background-image", "url('"+answerer.user.profile_image+"')" );
+	image.css( "background-repeat", "no-repeat" );
+	
+
+	//set viewed for the answerer
+	var viewed = result.find('.viewed');
+	viewed.text(answerer.view_count);
+
+	return result;
+};
 
 
