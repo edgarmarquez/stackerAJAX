@@ -144,7 +144,7 @@ var showAnswer = function(answerer) {
 
 	//set viewed for the answerer
 	var viewed = result.find('.viewed');
-	viewed.text(answerer.view_count);
+	viewed.text(answerer.post_count);
 
 	return result;
 };

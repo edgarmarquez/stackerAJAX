@@ -11,6 +11,10 @@
 	float: left;
 }
 
+.photo { height: 128px; 
+	width: 128px;
+	 }
+
 .stack-image {
 	background: url('images/stack-icon.png') no-repeat center center;
 	width: 200px;
